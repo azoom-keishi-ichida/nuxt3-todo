@@ -1,0 +1,77 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider        = "prisma-client-js"
+}
+
+model User {
+  id      Int      @id @default(autoincrement())
+  email   String   @unique
+  name    String?
+  role    Role     @default(USER)
+  posts   Post[]
+  profile Profile?
+  // organization  Organization  @relation(fields: [OrganizationId], references: [id])
+  // OrganizationId Int    @unique @map("organization_id")
+
+   @@map("users")
+   @@index([name])
+}
+
+model Profile {
+  id     Int    @id @default(autoincrement())
+  bio    String
+  user   User   @relation(fields: [userId], references: [id])
+  userId Int    @unique @map("user_id")
+
+  @@map("profiles")
+  @@index([bio])
+}
+
+model Post {
+  id        Int      @id @default(autoincrement()) @map("post_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  published Boolean  @default(false) @map("is_published")
+  title     String   @db.VarChar(255) @map("post_title")
+  author    User?    @relation(fields: [authorId], references: [id])
+  views Int @default(0) @map("views")
+  likes Int @default(0)
+  authorId  Int?     @map("author_id")
+  categories Category[]
+
+
+  @@map("posts")
+  @@index([title,authorId])
+}
+
+model Category {
+  id    Int    @id @default(autoincrement())
+  name  String
+  posts Post[]
+
+  @@map("categories")
+  @@index([name])
+}
+
+// model Organization {
+//   id Int @id @default(autoincrement())
+//   name String
+//   status State @default(PUBLISDED)
+//   users User[]
+
+//   @@index([name, status])
+// }
+
+// enum State {
+//   ARCHIVED
+//   PUBLISDED
+// }
+
+enum Role {
+  USER
+  ADMIN
+}
