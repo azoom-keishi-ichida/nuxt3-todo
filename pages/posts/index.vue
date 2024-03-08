@@ -17,13 +17,18 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
+type userDataType = {
+  id: number
+  name: string
+}
+
 const error = ref<any>(null)
 const title = ref<string | null>(null)
-const usersData = ref<any>(null)
-const selectedUser = ref<any>(null)
+const usersData = ref<userDataType[] | null>(null)
+const selectedUser = ref<number | any>(null)
 const router = useRouter()
 
-const postPosts = async () => {
+const postPosts = async (): Promise<void> => {
   if (selectedUser === null) {
     return new Error('userを選択してください')
   }
@@ -45,21 +50,24 @@ const postPosts = async () => {
   }
 }
 
-const fetchUsers = async () => {
+const fetchUsers = async (): Promise<void> => {
   try {
     const response = await fetch(`/api/users/`)
     if (!response.ok) {
       throw new Error('Error while fetching posts')
     }
     const originalData = await response.json()
-    const usersDataArray = originalData.map((user) => ({ id: user.id, name: user.name }))
+    const usersDataArray: userDataType[] = originalData.map((user: userDataType) => ({
+      id: user.id,
+      name: user.name,
+    }))
     usersData.value = usersDataArray
   } catch (err) {
     error.value = err.message
   }
 }
 
-const navigateTo = (url: string) => {
+const navigateTo = (url: string): void => {
   router.push(url)
 }
 

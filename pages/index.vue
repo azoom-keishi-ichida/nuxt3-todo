@@ -17,7 +17,7 @@
         <v-col cols="12" sm="6" md="4" v-if="selectedUserId === null">
           <v-alert type="error" dense>ユーザーを選択してください</v-alert>
         </v-col>
-        <v-col v-else v-for="todo in data.posts" :key="todo.id">
+        <v-col v-else v-for="todo in data?.posts" :key="todo.id">
           <v-card class="todo-card">
             <v-card-title class="justify-center">
               {{ todo.title }}
@@ -35,20 +35,46 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
 
-const data = ref<any>(null)
-const usersData = ref<any>(null)
+type userType = {
+  id: number
+  email: string
+  name: string
+  role: string
+}
+
+type Post = {
+  id: number
+  createdAt: string
+  updatedAt: string
+  published: boolean
+  title: string
+  views: number
+  likes: number
+  authorId: number
+}
+
+type UserDataType = {
+  id: number
+  email: string
+  name: string
+  role: string
+  posts: Post[]
+}
+
+const data = ref<UserDataType | null>(null)
+const usersData = ref<userType[] | null>(null)
 const error = ref<any>(null)
 const router = useRouter()
 
 const selectedUserId = ref<number | null>(null)
 
-const fetchPosts = async () => {
+const fetchPosts = async (): Promise<null | void> => {
   try {
     if (selectedUserId.value === null) {
-      data.value = []
-      return data
+      data.value = null
+      return data.value
     }
-    const response = await $fetch(`api/users/${selectedUserId.value}/posts`)
+    const response: UserDataType = await $fetch(`api/users/${selectedUserId.value}/posts`)
     if (!response) {
       throw new Error('エラーが発生しました')
     }
@@ -58,7 +84,7 @@ const fetchPosts = async () => {
   }
 }
 
-const fetchUsers = async () => {
+const fetchUsers = async (): Promise<void> => {
   try {
     const response = await fetch(`api/users/`)
     if (!response.ok) {
@@ -70,7 +96,7 @@ const fetchUsers = async () => {
   }
 }
 
-const deleteTodo = async (id: number) => {
+const deleteTodo = async (id: number): Promise<void> => {
   try {
     const response = await $fetch(`api/posts/${id}`, {
       method: 'DELETE',
@@ -84,11 +110,11 @@ const deleteTodo = async (id: number) => {
   }
 }
 
-const navigateTo = (url: string) => {
+const navigateTo = (url: string): void => {
   router.push(url)
 }
 
-watch(selectedUserId, async () => {
+watch(selectedUserId, async (): Promise<void> => {
   fetchPosts()
 })
 

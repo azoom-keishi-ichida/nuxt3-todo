@@ -17,9 +17,10 @@ import { ref } from 'vue'
 
 const emailAddress = ref<string | null>(null)
 const name = ref<string | null>(null)
+const error = ref<any>()
 const router = useRouter()
 
-const submitUser = async () => {
+const submitUser = async (): Promise<void> => {
   try {
     const response = await $fetch(`api/users`, {
       method: 'POST',
