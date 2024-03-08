@@ -11,7 +11,7 @@
   </div>
   <v-text-field v-model="title"> </v-text-field>
   <v-btn @click="postPosts" :disabled="!title || !selectedUser"> Submit </v-btn>
-  <v-btn @click="() => nextPages('/')">一覧画面へ</v-btn>
+  <v-btn @click="() => navigateTo('/')">一覧画面へ</v-btn>
 </template>
 
 <script setup lang="ts">
@@ -59,7 +59,7 @@ const fetchUsers = async () => {
   }
 }
 
-const nextPages = (url: string) => {
+const navigateTo = (url: string) => {
   router.push(url)
 }
 

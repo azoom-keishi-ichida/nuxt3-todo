@@ -1,13 +1,13 @@
 <template>
   <div>
-    <h2>user登録</h2>
-    <form class="form-tag" @submit.prevent="postUser">
-      <h4>email</h4>
-      <input v-model="email" placeholder="emailを入力" />
+    <h2>ユーザー登録</h2>
+    <form class="user-form" @submit.prevent="submitUser">
+      <h4>Email</h4>
+      <input v-model="emailAddress" placeholder="Emailを入力" />
       <br />
-      <h4>名前を入力</h4>
-      <input v-model="userName" placeholder="名前を入力" />
-      <v-btn type="submit" :disabled="!email || !userName">送信</v-btn>
+      <h4>名前</h4>
+      <input v-model="name" placeholder="名前を入力" />
+      <v-btn type="submit" :disabled="!emailAddress || !name">送信</v-btn>
     </form>
   </div>
 </template>
@@ -15,21 +15,21 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-const email = ref<string | null>(null)
-const userName = ref<string | null>(null)
+const emailAddress = ref<string | null>(null)
+const name = ref<string | null>(null)
 const router = useRouter()
 
-const postUser = async () => {
+const submitUser = async () => {
   try {
     const response = await $fetch(`api/users`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ name: userName.value, email: email.value }),
+      body: JSON.stringify({ name: name.value, email: emailAddress.value }),
     })
     if (!response) {
-      throw new Error('Error while fetching posts')
+      throw new Error('ユーザー情報の送信中にエラーが発生しました')
     }
     router.push('/')
   } catch (err) {
