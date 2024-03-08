@@ -10,9 +10,15 @@ export default defineEventHandler(async (event) => {
     return
   }
 
-  const postData = {
+  interface dataType {
+    title: string
+  }
+
+  const postData: dataType = {
     title: body.title,
   }
+
+  console.log(postData)
 
   const result = await prisma.post.create({
     data: {

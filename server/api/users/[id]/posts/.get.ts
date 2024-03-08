@@ -9,10 +9,13 @@ export default defineEventHandler(async (event) => {
     return
   }
 
-  const postsData = await prisma.post.deleteMany({
+  const userPostsData = await prisma.user.findFirstOrThrow({
     where: {
       id: Number(params.id),
     },
+    include: {
+      posts: true,
+    },
   })
-  return postsData
+  return userPostsData
 })
