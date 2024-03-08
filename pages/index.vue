@@ -68,18 +68,18 @@ const router = useRouter()
 
 const selectedUserId = ref<number | null>(null)
 
-const fetchPosts = async (): Promise<null | void> => {
+const fetchPosts = async (): Promise<void> => {
   try {
     if (selectedUserId.value === null) {
       data.value = null
-      return data.value
+      return
     }
     const response: UserDataType = await $fetch(`api/users/${selectedUserId.value}/posts`)
     if (!response) {
       throw new Error('エラーが発生しました')
     }
     data.value = response
-  } catch (err) {
+  } catch (err: any) {
     error.value = err.message
   }
 }
@@ -91,7 +91,7 @@ const fetchUsers = async (): Promise<void> => {
       throw new Error('ユーザー情報の取得中にエラーが発生しました')
     }
     usersData.value = await response.json()
-  } catch (err) {
+  } catch (err: any) {
     error.value = err.message
   }
 }
@@ -105,7 +105,7 @@ const deleteTodo = async (id: number): Promise<void> => {
       throw new Error('Todoの削除中にエラーが発生しました')
     }
     fetchPosts()
-  } catch (err) {
+  } catch (err: any) {
     error.value = err.message
   }
 }

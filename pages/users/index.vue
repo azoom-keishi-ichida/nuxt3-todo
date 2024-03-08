@@ -33,7 +33,7 @@ const submitUser = async (): Promise<void> => {
       throw new Error('ユーザー情報の送信中にエラーが発生しました')
     }
     router.push('/')
-  } catch (err) {
+  } catch (err: any) {
     error.value = err.message
   }
 }

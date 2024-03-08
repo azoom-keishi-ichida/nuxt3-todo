@@ -30,7 +30,7 @@ const router = useRouter()
 
 const postPosts = async (): Promise<void> => {
   if (selectedUser === null) {
-    return new Error('userを選択してください')
+    throw new Error('userを選択してください')
   }
   try {
     // ここでtitle.valueを使用し、全体をオブジェクトとして送信
@@ -45,7 +45,7 @@ const postPosts = async (): Promise<void> => {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
     title.value = null
-  } catch (err) {
+  } catch (err: any) {
     error.value = err.message
   }
 }
@@ -62,7 +62,7 @@ const fetchUsers = async (): Promise<void> => {
       name: user.name,
     }))
     usersData.value = usersDataArray
-  } catch (err) {
+  } catch (err: any) {
     error.value = err.message
   }
 }
